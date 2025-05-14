@@ -8,7 +8,6 @@ export default function Row({ row, rowIndex, moveRow }) {
     const ref = useRef(null)
     const addColumnToRow = useCampaignStore((state) => state.addColumnToRow)
     const removeColumnFromRow = useCampaignStore((state) => state.removeColumnFromRow)
-    const removeRow = useCampaignStore((s) => s.removeRow)
     const responsiveMode = useCampaignStore((s) => s.siteSettings.responsiveMode)
 
     const [, drop] = useDrop({
@@ -56,19 +55,10 @@ export default function Row({ row, rowIndex, moveRow }) {
 
     return (
         <>
-            <div className="w-full flex justify-start">
-                <button
-                    onClick={() => removeRow(row.id)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                    title="حذف ردیف"
-                >
-                    <CloseIcon />
-                </button>
-            </div>
 
             <div
                 ref={ref}
-                className={`grid grid-cols-12 gap-4 my-4 transition-all ${isDragging ? "opacity-50" : ""}`}
+                className={`grid grid-cols-12 gap-4 transition-all ${isDragging ? "opacity-50" : ""}`}
             >
                 {row.columns.map((col, colIndex) => (
                     <div
@@ -76,6 +66,7 @@ export default function Row({ row, rowIndex, moveRow }) {
                         className={`${getResponsiveColClass(col.width)}`}
                     >
                         <Column
+                            handelRemove={row.id}
                             column={col}
                             rowIndex={rowIndex}
                             colIndex={colIndex}

@@ -79,21 +79,7 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
     }
 
     return (
-        <div
-            ref={ref}
-            className={`bg-white p-2 border rounded shadow ${isDragging ? "opacity-50" : ""}`}
-            style={{ width: widget.data?.width || "100%" }}
-        >
-            <div className="flex justify-between items-center mb-1">
-                <span className="text-xs text-gray-400">{widget.type}</span>
-                <button
-                    onClick={handleRemove}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                    title="حذف ویجت"
-                >
-                    <CloseIcon />
-                </button>
-            </div>
+        <>
             <div className="flex justify-end gap-1 text-xs mt-2">
                 {["100%", "50%", "33%", "25%"].map((w) => (
                     <button
@@ -108,8 +94,24 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
                     </button>
                 ))}
             </div>
+            <div
+                ref={ref}
+                className={`bg-white p-2 border rounded shadow ${isDragging ? "opacity-50" : ""}`}
+                style={{ width: widget.data?.width || "100%" }}
+            >
+                <div className="flex justify-between items-center mb-1">
+                    <button
+                        onClick={handleRemove}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                        title="حذف ویجت"
+                    >
+                        <CloseIcon />
+                    </button>
+                    <span className="text-xs text-gray-400">{widget.type}</span>
+                </div>
 
-            {renderWidget()}
-        </div>
+                {renderWidget()}
+            </div>
+        </>
     )
 }
