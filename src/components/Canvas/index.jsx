@@ -5,9 +5,10 @@ export default function Canvas({ isOpen }) {
     const rows = useCampaignStore((state) => state.widgets)
     const moveRow = useCampaignStore((state) => state.moveRow)
     const settings = useCampaignStore((s) => s.siteSettings);
-    let widthClass = "w-full"
-    if (settings.responsiveMode === "mobile") widthClass = "w-[375px]"
-    if (settings.responsiveMode === "tablet") widthClass = "w-[768px]"
+    let widthClass = "w-full";
+    if (settings.responsiveMode === "mobile") widthClass = "w-[375px]";
+    if (settings.responsiveMode === "tablet") widthClass = "w-[768px]";
+    if (settings.responsiveMode === "desktop") widthClass = "w-[1280px]";
     return (
         <div
             style={{

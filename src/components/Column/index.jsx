@@ -23,7 +23,7 @@ export default function Column({ column, rowIndex, colIndex }) {
             const widget = {
                 id: uuidv4(),
                 type: item.type,
-                data: { text: "پیش‌فرض", align: "left" } // ← مقدار اولیه
+                data: { text: "پیش‌فرض", align: "left", width: "100%", } // ← مقدار اولیه
             }
             addWidgetToColumn(rowIndex, colIndex, widget)
         }
@@ -39,12 +39,20 @@ export default function Column({ column, rowIndex, colIndex }) {
         addWidgetToColumn(rowIndex, colIndex, widget);
         setShowWidgetMenu(false);
     };
+    const columnAlign = column.align || "center";
+
+    const alignClass =
+        columnAlign === "left"
+            ? "items-start"
+            : columnAlign === "right"
+                ? "items-end"
+                : "items-center";
 
     return (
         <div
             ref={drop}
-            className={`bg-gray-100 p-4 rounded shadow min-h-[100px] transition-opacity ${isDragging ? "opacity-50" : ""}`}
-            style={{ width: "100%", maxWidth: "100%" }} // پیش‌فرض، اما override می‌کنی
+            className={`flex flex-col ${alignClass} bg-gray-100 p-4 rounded shadow min-h-[100px] transition-opacity ${isDragging ? "opacity-50" : ""}`}
+            style={{ width: "100%" }}
         >
             {column.widgets.map((widget, index) => (
                 <CanvasItem
@@ -62,6 +70,21 @@ export default function Column({ column, rowIndex, colIndex }) {
             >
                 +
             </button>
+            <div className="flex justify-end gap-1 text-xs mt-2">
+                {["left", "center", "right"].map((a) => (
+                    <button
+                        key={a}
+                        onClick={() =>
+                            useCampaignStore.getState().updateColumnAlign(rowIndex, colIndex, a)
+                        }
+                        className={`px-2 py-0.5 border rounded ${column.align === a ? "bg-blue-500 text-white" : "bg-white"
+                            }`}
+                    >
+                        {a === "left" ? "⬅" : a === "center" ? "⬍" : "➡"}
+                    </button>
+                ))}
+            </div>
+
             {showWidgetMenu && (
                 <div className="absolute z-10 mt-1 bg-white border shadow rounded p-2 text-sm">
                     <button onClick={() => handleAddWidget("text")} className="block w-full text-left px-2 py-1 hover:bg-gray-100">📝 متن</button>

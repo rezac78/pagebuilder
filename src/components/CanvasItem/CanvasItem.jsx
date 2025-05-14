@@ -82,14 +82,10 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
         <div
             ref={ref}
             className={`bg-white p-2 border rounded shadow ${isDragging ? "opacity-50" : ""}`}
+            style={{ width: widget.data?.width || "100%" }}
         >
             <div className="flex justify-between items-center mb-1">
                 <span className="text-xs text-gray-400">{widget.type}</span>
-                <div className="flex items-center gap-1 text-xs">
-                    <button onClick={() => updateWidgetData(rowIndex, colIndex, widget.id, { align: "left" })}>⬅️</button>
-                    <button onClick={() => updateWidgetData(rowIndex, colIndex, widget.id, { align: "center" })}>↔️</button>
-                    <button onClick={() => updateWidgetData(rowIndex, colIndex, widget.id, { align: "right" })}>➡️</button>
-                </div>
                 <button
                     onClick={handleRemove}
                     className="text-red-500 hover:text-red-700 text-sm"
@@ -97,6 +93,20 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
                 >
                     <CloseIcon />
                 </button>
+            </div>
+            <div className="flex justify-end gap-1 text-xs mt-2">
+                {["100%", "50%", "33%", "25%"].map((w) => (
+                    <button
+                        key={w}
+                        onClick={() =>
+                            updateWidgetData(rowIndex, colIndex, widget.id, { width: w })
+                        }
+                        className={`px-2 py-0.5 border rounded ${widget.data?.width === w ? "bg-blue-500 text-white" : "bg-white"
+                            }`}
+                    >
+                        {w}
+                    </button>
+                ))}
             </div>
 
             {renderWidget()}

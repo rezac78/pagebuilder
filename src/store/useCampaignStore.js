@@ -9,15 +9,13 @@ export const useCampaignStore = create((set) => ({
             const newRow = {
                 id: uuidv4(),
                 type: "row",
-                align: "center",
                 columns: columnsWidth.map((width) => ({
                     id: uuidv4(),
-                    width,
-                    align: "center",
+                    width, // ← کلید اصلی
                     widgets: [],
                 })),
-            }
-            return { widgets: [...state.widgets, newRow] }
+            };
+            return { widgets: [...state.widgets, newRow] };
         }),
 
     removeRow: (rowId) =>
