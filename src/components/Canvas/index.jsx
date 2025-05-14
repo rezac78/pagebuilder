@@ -8,7 +8,7 @@ export default function Canvas({ isOpen }) {
     let widthClass = "w-full";
     if (settings.responsiveMode === "mobile") widthClass = "w-[375px]";
     if (settings.responsiveMode === "tablet") widthClass = "w-[768px]";
-    if (settings.responsiveMode === "desktop") widthClass = "w-[1280px]";
+    if (settings.responsiveMode === "desktop") widthClass = "w-full";
     return (
         <div
             style={{
