@@ -156,6 +156,74 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                             </select>
                         </section>
                     )}
+                    {selectedWidget && (
+                        <section className="space-y-2">
+                            <h3 className="text-sm font-semibold">تنظیمات ویجت انتخاب‌شده</h3>
+
+                            {/* سایز */}
+                            <div className="flex gap-2 text-sm">
+                                {["100%", "50%", "33%", "25%"].map((w) => (
+                                    <button
+                                        key={w}
+                                        onClick={() => handleUpdate("width", w)}
+                                        className={`px-2 py-1 border rounded ${selectedWidget.data.width === w ? "bg-blue-500 text-white" : ""}`}
+                                    >
+                                        {w}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* تنظیم ترازبندی ستون */}
+                            <div className="space-y-1">
+                                <h4 className="text-sm font-medium">چینش ستون</h4>
+                                <div className="flex gap-2 text-sm">
+                                    {["left", "center", "right"].map((a) => (
+                                        <button
+                                            key={a}
+                                            onClick={() =>
+                                                useCampaignStore.getState().updateColumnAlign(
+                                                    selectedWidget.rowIndex,
+                                                    selectedWidget.colIndex,
+                                                    a
+                                                )
+                                            }
+                                            className={`px-2 py-1 border rounded ${useCampaignStore.getState().widgets[selectedWidget.rowIndex]?.columns[selectedWidget.colIndex]?.align === a
+                                                ? "bg-blue-500 text-white"
+                                                : ""
+                                                }`}
+                                        >
+                                            {a === "left" ? "⬅" : a === "center" ? "⬍" : "➡"}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* حذف ویجت */}
+                            <button
+                                onClick={() => {
+                                    useCampaignStore.getState().removeWidgetFromColumn(
+                                        selectedWidget.rowIndex,
+                                        selectedWidget.colIndex,
+                                        selectedWidget.widgetId
+                                    );
+                                    setSelectedWidget(null);
+                                }}
+                                className="w-full text-red-600 border border-red-300 py-1 rounded hover:bg-red-100"
+                            >
+                                حذف ویجت ❌
+                            </button>
+
+                            {/* حذف ردیف هم می‌تونه بیاد اینجا */}
+                            <button
+                                onClick={() => {
+                                    useCampaignStore.getState().removeRow(selectedWidget.rowId);
+                                    setSelectedWidget(null);
+                                }}
+                                className="w-full text-orange-600 border border-orange-300 py-1 rounded hover:bg-orange-100"
+                            >
+                                حذف ردیف 🧱
+                            </button>
+                        </section>
+                    )}
                 </>
             )}
         </div>

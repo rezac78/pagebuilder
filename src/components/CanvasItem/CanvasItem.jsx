@@ -7,16 +7,11 @@ import { useCampaignStore } from "../../store/useCampaignStore"
 import RichBlock from "../widgets/RichBlock"
 import CloseIcon from "../../../public/icons/close"
 
-export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidget, moveWidgetToAnotherColumn }) {
+export default function CanvasItem({ widget, index, rowIndex, colIndex, rowId, moveWidget, moveWidgetToAnotherColumn }) {
     const ref = useRef(null)
     const updateWidgetData = useCampaignStore((state) => state.updateWidgetData)
-    const removeWidgetFromColumn = useCampaignStore((s) => s.removeWidgetFromColumn)
     const setSelectedWidget = useCampaignStore((s) => s.setSelectedWidget)
     const previewMode = useCampaignStore((s) => s.previewMode)
-
-    const handleRemove = () => {
-        removeWidgetFromColumn(rowIndex, colIndex, widget.id)
-    }
     const [, drop] = useDrop({
         accept: "CANVAS_WIDGET",
         hover(item, monitor) {
@@ -53,10 +48,12 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
         setSelectedWidget({
             rowIndex,
             colIndex,
+            rowId, // ✅ این خط را اضافه کن
             widgetId: widget.id,
             type: widget.type,
             data: widget.data
         })
+
     }
     const [{ isDragging }, drag] = useDrag({
         type: "CANVAS_WIDGET",
@@ -95,7 +92,7 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
 
     return (
         <>
-            {!previewMode && (
+            {/* {!previewMode && (
                 <div className="flex justify-end gap-1 text-xs mt-2">
                     {["100%", "50%", "33%", "25%"].map((w) => (
                         <button
@@ -110,13 +107,14 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
                         </button>
                     ))}
                 </div>
-            )}
+            )} */}
             <div
                 ref={ref}
+                onClick={handleSelect}
                 className={`${!previewMode ? "bg-white p-2 border rounded shadow" : ""} ${isDragging ? "opacity-50" : ""}`}
                 style={{ width: widget.data?.width || "100%" }}
             >
-                {!previewMode && (
+                {/* {!previewMode && (
                     <div className="flex justify-between items-center mb-1">
                         <button
                             onClick={handleRemove}
@@ -127,7 +125,7 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
                         </button>
                         <span className="text-xs text-gray-400">{widget.type}</span>
                     </div>
-                )}
+                )} */}
                 {renderWidget()}
             </div>
         </>
