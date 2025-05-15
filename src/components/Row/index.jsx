@@ -40,22 +40,16 @@ export default function Row({ row, rowIndex, moveRow }) {
 
     function getResponsiveColClass(width) {
         if (responsiveMode === "mobile") {
-            return "col-span-12" // همه زیر هم
+            return "col-span-12"
         } else if (responsiveMode === "tablet") {
-            return width === 12
-                ? "col-span-12"
-                : width === 6
-                    ? "col-span-12 md:col-span-6"
-                    : `col-span-12 md:col-span-${width}`
+            return `col-span-12 md:col-span-${width}`
         } else {
-            // desktop
             return `col-span-${width}`
         }
     }
 
     return (
         <>
-
             <div
                 ref={ref}
                 className={`grid grid-cols-12 gap-4 transition-all ${isDragging ? "opacity-50" : ""}`}
@@ -63,7 +57,7 @@ export default function Row({ row, rowIndex, moveRow }) {
                 {row.columns.map((col, colIndex) => (
                     <div
                         key={col.id}
-                        className={`${getResponsiveColClass(col.width)}`}
+                        className={getResponsiveColClass(col.width)}
                     >
                         <Column
                             handelRemove={row.id}
