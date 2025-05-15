@@ -10,6 +10,8 @@ export default function Column({ column, handelRemove, rowIndex, colIndex }) {
     const moveWidget = useCampaignStore((state) => state.moveWidgetInColumn)
     const addWidgetToColumn = useCampaignStore((state) => state.addWidgetToColumn)
     const removeRow = useCampaignStore((s) => s.removeRow)
+    const previewMode = useCampaignStore((s) => s.previewMode)
+
     const [{ isDragging }, drag] = useDrag({
         type: "COLUMN",
         item: { fromRow: rowIndex, fromCol: colIndex, column, type: "COLUMN" },
@@ -53,20 +55,23 @@ export default function Column({ column, handelRemove, rowIndex, colIndex }) {
     return (
         <div
             ref={drop}
-            className={`flex flex-col ${alignClass} p-2 rounded shadow min-h-[100px] transition-opacity ${isDragging ? "opacity-50" : ""}`}
+            className={`flex flex-col ${alignClass} p-2 rounded ${!previewMode && "shadow"} transition-opacity ${isDragging ? "opacity-50" : ""}`}
             style={{ width: "100%" }}
         >
-            <div className="w-full flex justify-start">
-                <button
-                    onClick={() => removeRow(handelRemove)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                    title="حذف ردیف"
-                >
-                    <CloseIcon />
-                </button>
-            </div>
+            {!previewMode && (
+                <div className="w-full flex justify-start">
+                    <button
+                        onClick={() => removeRow(handelRemove)}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                        title="حذف ردیف"
+                    >
+                        <CloseIcon />
+                    </button>
+                </div>
+            )}
             {column.widgets.map((widget, index) => (
                 <CanvasItem
+                    key={widget.id}
                     widget={widget}
                     index={index}
                     rowIndex={rowIndex}
@@ -75,27 +80,30 @@ export default function Column({ column, handelRemove, rowIndex, colIndex }) {
                     moveWidgetToAnotherColumn={moveWidgetToAnotherColumn}
                 />
             ))}
-            <button
-                className="text-blue-600 text-sm flex items-center gap-1 hover:underline"
-                onClick={() => setShowWidgetMenu(!showWidgetMenu)}
-            >
-                +
-            </button>
-            <div className="flex justify-end gap-1 text-xs mt-2">
-                {["left", "center", "right"].map((a) => (
-                    <button
-                        key={a}
-                        onClick={() =>
-                            useCampaignStore.getState().updateColumnAlign(rowIndex, colIndex, a)
-                        }
-                        className={`px-2 py-0.5 border rounded ${column.align === a ? "bg-blue-500 text-white" : "bg-white"
-                            }`}
-                    >
-                        {a === "left" ? "⬅" : a === "center" ? "⬍" : "➡"}
-                    </button>
-                ))}
-            </div>
-
+            {!previewMode && (
+                <button
+                    className="text-blue-600 text-sm flex items-center gap-1 hover:underline"
+                    onClick={() => setShowWidgetMenu(!showWidgetMenu)}
+                >
+                    +
+                </button>
+            )}
+            {!previewMode && (
+                <div className="flex justify-end gap-1 text-xs mt-2">
+                    {["left", "center", "right"].map((a) => (
+                        <button
+                            key={a}
+                            onClick={() =>
+                                useCampaignStore.getState().updateColumnAlign(rowIndex, colIndex, a)
+                            }
+                            className={`px-2 py-0.5 border rounded ${column.align === a ? "bg-blue-500 text-white" : "bg-white"
+                                }`}
+                        >
+                            {a === "left" ? "⬅" : a === "center" ? "⬍" : "➡"}
+                        </button>
+                    ))}
+                </div>
+            )}
             {showWidgetMenu && (
                 <div className="absolute z-10 mt-1 bg-white border shadow rounded p-2 text-sm">
                     <button onClick={() => handleAddWidget("text")} className="block w-full text-left px-2 py-1 hover:bg-gray-100">📝 متن</button>

@@ -9,6 +9,7 @@ export default function Row({ row, rowIndex, moveRow }) {
     const addColumnToRow = useCampaignStore((state) => state.addColumnToRow)
     const removeColumnFromRow = useCampaignStore((state) => state.removeColumnFromRow)
     const responsiveMode = useCampaignStore((s) => s.siteSettings.responsiveMode)
+    const previewMode = useCampaignStore((s) => s.previewMode)
 
     const [, drop] = useDrop({
         accept: ["ROW", "COLUMN"],
@@ -31,13 +32,15 @@ export default function Row({ row, rowIndex, moveRow }) {
     const [{ isDragging }, drag] = useDrag({
         type: "ROW",
         item: { id: row.id, index: rowIndex, type: "ROW" },
+        canDrag: !previewMode,
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
     })
 
-    drag(drop(ref))
-
+    if (!previewMode) {
+        drag(drop(ref))
+    }
     function getResponsiveColClass(width) {
         if (responsiveMode === "mobile") {
             return "col-span-12"

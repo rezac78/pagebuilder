@@ -11,6 +11,8 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
     const ref = useRef(null)
     const updateWidgetData = useCampaignStore((state) => state.updateWidgetData)
     const removeWidgetFromColumn = useCampaignStore((s) => s.removeWidgetFromColumn)
+    const setSelectedWidget = useCampaignStore((s) => s.setSelectedWidget)
+    const previewMode = useCampaignStore((s) => s.previewMode)
 
     const handleRemove = () => {
         removeWidgetFromColumn(rowIndex, colIndex, widget.id)
@@ -47,22 +49,35 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
         }
 
     })
-
+    const handleSelect = () => {
+        setSelectedWidget({
+            rowIndex,
+            colIndex,
+            widgetId: widget.id,
+            type: widget.type,
+            data: widget.data
+        })
+    }
     const [{ isDragging }, drag] = useDrag({
         type: "CANVAS_WIDGET",
         item: { id: widget.id, index, rowIndex, colIndex },
+        canDrag: !previewMode,
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         })
     })
 
-    drag(drop(ref))
+    if (!previewMode) {
+        drag(drop(ref))
+    }
 
 
     const renderWidget = () => {
         switch (widget.type) {
             case "hero": return <Hero data={widget.data} />
-            case "text": return <TextBlock data={widget.data} />
+            case "text": return <div onClick={handleSelect} className="cursor-pointer">
+                <TextBlock data={widget.data} />
+            </div>
             case "image": return <ImageBlock data={{ ...widget.data, rowIndex, colIndex, id: widget.id }} />
 
             case "richblock":
@@ -80,36 +95,39 @@ export default function CanvasItem({ widget, index, rowIndex, colIndex, moveWidg
 
     return (
         <>
-            <div className="flex justify-end gap-1 text-xs mt-2">
-                {["100%", "50%", "33%", "25%"].map((w) => (
-                    <button
-                        key={w}
-                        onClick={() =>
-                            updateWidgetData(rowIndex, colIndex, widget.id, { width: w })
-                        }
-                        className={`px-2 py-0.5 border rounded ${widget.data?.width === w ? "bg-blue-500 text-white" : "bg-white"
-                            }`}
-                    >
-                        {w}
-                    </button>
-                ))}
-            </div>
+            {!previewMode && (
+                <div className="flex justify-end gap-1 text-xs mt-2">
+                    {["100%", "50%", "33%", "25%"].map((w) => (
+                        <button
+                            key={w}
+                            onClick={() =>
+                                updateWidgetData(rowIndex, colIndex, widget.id, { width: w })
+                            }
+                            className={`px-2 py-0.5 border rounded ${widget.data?.width === w ? "bg-blue-500 text-white" : "bg-white"
+                                }`}
+                        >
+                            {w}
+                        </button>
+                    ))}
+                </div>
+            )}
             <div
                 ref={ref}
-                className={`bg-white p-2 border rounded shadow ${isDragging ? "opacity-50" : ""}`}
+                className={`${!previewMode ? "bg-white p-2 border rounded shadow" : ""} ${isDragging ? "opacity-50" : ""}`}
                 style={{ width: widget.data?.width || "100%" }}
             >
-                <div className="flex justify-between items-center mb-1">
-                    <button
-                        onClick={handleRemove}
-                        className="text-red-500 hover:text-red-700 text-sm"
-                        title="حذف ویجت"
-                    >
-                        <CloseIcon />
-                    </button>
-                    <span className="text-xs text-gray-400">{widget.type}</span>
-                </div>
-
+                {!previewMode && (
+                    <div className="flex justify-between items-center mb-1">
+                        <button
+                            onClick={handleRemove}
+                            className="text-red-500 hover:text-red-700 text-sm"
+                            title="حذف ویجت"
+                        >
+                            <CloseIcon />
+                        </button>
+                        <span className="text-xs text-gray-400">{widget.type}</span>
+                    </div>
+                )}
                 {renderWidget()}
             </div>
         </>

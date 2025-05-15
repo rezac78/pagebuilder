@@ -139,6 +139,12 @@ export const useCampaignStore = create(
                     newWidgets[rowIndex].columns[colIndex].align = align;
                     return { widgets: newWidgets };
                 }),
+            selectedWidget: null,
+            setSelectedWidget: (widget) => set({ selectedWidget: widget }),
+            previewMode: false,
+            togglePreviewMode: () =>
+                set((state) => ({ previewMode: !state.previewMode })),
+
         }),
         {
             name: 'campaign-store', // نام key داخل localStorage
