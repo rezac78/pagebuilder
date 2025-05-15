@@ -54,7 +54,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
     return (
         <div
-            className={`transition-all ${isOpen ? "w-[20%]" : "w-[60px]"
+            className={`transition-all overflow-y-auto h-96 ${isOpen ? "w-[20%]" : "w-[60px]"
                 } bg-gray-100 p-4 space-y-4 border-l min-h-screen`}
         >
             <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer mb-4">
